@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    *{margin:0;border:0;padding:0;}
+    body{
+      margin:auto;
+      text-align:center;
+      font-family:Verdana;
+    }
+    ul{
+      margin:auto;
+      width:90%;
+      padding-top:.5em;
+      padding-bottom:.5em;
+    }
+    li{
+      list-style:none;
+    }
+    .lista{
+      border:thin solid #999;
+      border-radius:.25em;
+      width:32%;
+      display:inline-block;
+      vertical-align:top;
+    }
+    .contenedorC{
+      background:#CCC;
+      border-radius:.25em;
+      height:200px;
+      width:90%;
+      margin:auto;
+      display: flex;
+      justify-content: center;
+      align-content: center; 
+    }
+    canvas{
+      background:white;
+      display:block;
+
+    }
+    img{width:100%;}
+
+    .sliderC{
+      position:relative;
+    }
+    .personaje{
+      background:#DDD;
+      cursor: pointer;
+      text-align: left;
+      //border:thin solid black;
+      width:29%;
+    }
+    .personaje:hover{
+      background: skyblue;
+    }
+    .gImagenC{
+      background:#CCC;
+      border-radius:.25em;
+      cursor:pointer;
+      position:relative;
+      top: .5em;
+      padding:.25em;
+    }
+    .gImagenC:hover{
+      background: skyblue;
+    }
+
+  </style>
+</head>
+<body>
+  <section>
+      <ul>
+        <li id="char1" class="personaje">DOCTOR</li>
+        <li id="char2" class="personaje">PROGRAMADOR</li>
+        <li id="char3" class="personaje">GORDON FREEMAN</li>
+        <li id="char4" class="personaje">GORDON FREEMAN 2</li>
+      </ul>
+      <p id="renderI">...</p>
+      <ul>
+        <li id="img1" class="lista">
+          <img id="doc3" src="img/Doctor/DocImg3.png"">
+          <input type="color" id="colorImg1"/>
+          <p>COLOR</p>
+        </li>
+
+        <li id="img2" class="lista">
+          <img id="doc2" src="img/Doctor/DocImg2.png"">
+          <input type="color" id="colorImg2"/>
+          <p>COLOR</p>
+        </li>
+        <li id="img3" class="lista"><img id="doc1" src="img/Doctor/DocImg1.png"></li>
+      </ul>
+    <section id="contenedorI" class="contenedorC">
+      <canvas id="lienzoI" class="lienzoC" width="640" height="200"></canvas>
+    </section>
+  </section>
+  <a id="savImg" class="gImagenC" download="render.png">DESCARGAR</a>
+  <!-- <canvas id="lienzo2I" class="lienzo2C" width="1920" height="400"></canvas> -->
+
+<!---------------------------------------------------------------------------------->
+
+<script>
+  docImgs = ["img/Doctor/DocImg3.png","img/Doctor/DocImg2.png","img/Doctor/DocImg1.png"];
+  piraImgs = ["img/Programador/Programador3.png","img/Programador/Programador2.png","img/Programador/Programador1.png"];
+  freeImgs = ["img/Unreal/Gordon Freeman3.png","img/Unreal/Gordon Freeman2.png","img/Unreal/Gordon Freeman1.png"];
+  free2Imgs = ["img/Unreal/Gordon Freeman3.png","img/Unreal/Gordon Freeman2.png","img/Unreal/Gordon Freeman1-2.png"];
+  //BOTONES
+  doctor = document.getElementById('char1');
+  pirata = document.getElementById('char2');
+  freeman = document.getElementById('char3');
+  free2man = document.getElementById('char4');
+
+  //IMAGENES
+  imagen1 = document.getElementById('doc3');
+  imagen2 = document.getElementById('doc2');
+  imagen3 = document.getElementById('doc1');
+  imagen4 = document.getElementById('doc4');
+  //CANVAS
+  lienzo = document.getElementById('lienzoI');
+  ctx = lienzo.getContext("2d");
+
+  /*lienzoDescarga = document.getElementById('lienzo2I');
+  ctxDescarga = lienzoDescarga.getContext("2d");*/
+
+  anchoC = 1920/3;
+  altoC = 600/3;
+
+  ancho = 1920;alto = 600;
+
+  var actual;
+
+  /*Eventos*/
+  doctor.addEventListener('click',function(){cambiarImg(docImgs,imagen1,imagen2,imagen3,anchoC, altoC,0);actual = docImgs},false);
+  pirata.addEventListener('click',function(){cambiarImg(piraImgs,imagen1,imagen2,imagen3,anchoC, altoC,1);actual = piraImgs},false);
+  freeman.addEventListener('click',function(){cambiarImg(freeImgs,imagen1,imagen2,imagen3,anchoC, altoC,2);actual = freeImgs},false);
+  free2man.addEventListener('click',function(){cambiarImg(free2Imgs,imagen1,imagen2,imagen3,anchoC, altoC,3);actual = free2Imgs},false);
+
+  actual = docImgs;
+
+  ctx.drawImage(imagen1, 0, 0, anchoC, altoC);
+  ctx.drawImage(imagen2, 0, 0, anchoC, altoC);
+  ctx.drawImage(imagen3, 0, 0, anchoC, altoC);
+
+  /*ctxDescarga.drawImage(imagen1, 0, 0, ancho, alto);
+  ctxDescarga.drawImage(imagen2, 0, 0, ancho, alto);
+  ctxDescarga.drawImage(imagen3, 0, 0, ancho, alto);*/
+
+  render = document.getElementById('renderI');
+  j = 0;
+
+  //BTN COLOR
+  colorCapa1 = document.getElementById('colorImg1');
+  colorCapa2 = document.getElementById('colorImg2');
+
+  colorImg = [
+    [[226,220,0],[0,165,165]],
+    [[225,100,0],[255,50,0]],
+    [[0,130,106],[0,165,165]],
+    [[0,130,106],[0,165,165]],
+  ];
+  imgC = 0;
+  r = colorImg[imgC][0][0];
+  g = colorImg[imgC][0][1];
+  b = colorImg[imgC][0][2];
+
+  r2 = colorImg[imgC][1][0];
+  g2 = colorImg[imgC][1][1];
+  b2 = colorImg[imgC][1][2];
+
+
+  /*Funciones*/
+  function cambiarImg(arreglo,capa1,capa2,capa3,anchoCa,altoCa,imgColor){
+    noN1 = colorCapa1.value;
+    noN2 = colorCapa2.value;
+    bigint1 = parseInt(noN1.replace("#",""), 16);
+    bigint2 = parseInt(noN2.replace("#",""), 16);
+    //bigint1.replace("#","");
+
+    rojo1 = (bigint1 >> 16) & 255; rojo2 = (bigint2 >> 16) & 255;
+    verde1 = (bigint1 >> 8) & 255; verde2 = (bigint2 >> 8) & 255;
+    azul1 = bigint1 & 255; azul2 = bigint2 & 255;
+    console.log(colorCapa1.value,noN1,rojo1,verde1,azul1);
+    console.log(colorCapa2.value,noN2,rojo2,verde2,azul2);
+    ctx.clearRect(0, 0, anchoCa, altoCa);
+    imgC = imgColor;
+    r = rojo1;
+    g = verde1;
+    b = azul1;
+
+    r2 = rojo2;
+    g2 = verde2;
+    b2 = azul2;
+
+
+    capa1.src = arreglo[0];
+    capa2.src = arreglo[1];
+    capa3.src = arreglo[2];
+
+    ctx.drawImage(imagen1, 0, 0, anchoCa, altoCa);
+    imgData1 = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
+    ctx.clearRect(0, 0, anchoCa, altoCa);
+    ctx.drawImage(imagen2, 0, 0, anchoCa, altoCa);
+    imgData2 = ctx.getImageData(0, 0, lienzo.width, lienzo.height);
+    ctx.clearRect(0, 0, anchoCa, altoCa);
+    for (i = 0; i < imgData1.data.length; i += 4) {
+        if(imgData1.data[i] !=0){imgData1.data[i] = r;}
+        if(imgData2.data[i] !=0){imgData1.data[i] = r2;}
+
+        if(imgData1.data[i+1] !=0){imgData1.data[i+1] = g;}
+        if(imgData2.data[i+1] !=0){imgData1.data[i+1] = g2;}
+
+        if(imgData1.data[i+2] !=0){imgData1.data[i+2] = b;}
+        if(imgData2.data[i+2] !=0){imgData1.data[i+2] = b2;}
+
+        //if((imgData1.data[i+3] != 0)||(imgData2.data[i+3] != 0)){imgData1.data[i+3] = 255;}
+        if(imgData1.data[i+3] != 0){imgData1.data[i+3] = 255;}
+        if(imgData2.data[i+3] != 0){imgData1.data[i+3] = 255;}
+    }
+    ctx.clearRect(0, 0, anchoCa, altoCa);
+
+    ctx.putImageData(imgData1, 0, 0);
+    ctx.drawImage(imagen3, 0, 0, anchoCa, altoCa);
+    render.innerHTML = 'RENDER '+(j++);
+  }
+
+  setInterval(function(){cambiarImg(actual,imagen1,imagen2,imagen3,anchoC,altoC,imgC)},1000);
+
+</script>
+<script>
+  document.getElementById('savImg').addEventListener("click",descargar,false);
+    function descargar(){
+    console.log('ok');
+        imagen = lienzo.toDataURL("image/png");
+        //console.log(imagen);
+        this.href = imagen;
+    }
+  /*hexToRgb('ffffff');
+  function hexToRgb(hex) {
+      var bigint = parseInt(hex, 16);
+      var r = (bigint >> 16) & 255;
+      var g = (bigint >> 8) & 255;
+      var b = bigint & 255;
+
+      console.log(r,g,b);
+      //return r + "," + g + "," + b;
+  }*/
+</script>
+</body>
+</html>
